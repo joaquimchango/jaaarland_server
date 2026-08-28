@@ -32,6 +32,21 @@ router.post("/products", (req, res, next) => {
     .catch((err) => next(err));
 })
 
+router.patch("/products/:id", (req, res, next) => {
+
+  const {id} = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  Product.findByIdAndUpdate(id, req.body, { new: true })
+    .then((product) => res.status(200).json(product))
+    .catch((err) => next(err));
+
+})
+
 
 router.put("/products/:id", (req, res, next) => {
 
@@ -47,6 +62,8 @@ router.put("/products/:id", (req, res, next) => {
 
 
 
+
+
 router.delete("/products/:id", (req, res, next) => {
 const { id } = req.params;
 
@@ -55,7 +72,7 @@ const { id } = req.params;
     return;
   }
 
-  Product.findByIdAndRemove(id)
+  Product.findByIdAndDelete(id)
     .then((product) => res.status(200).json(product))
     .catch((err) => next(err));
 

@@ -7,7 +7,8 @@ const router = express.Router();
 
 router.get("/orders/all",  isAuthenticated, (req, res, next) => {
   
-  const userId= req.auth.userId
+  const userId= req.payload._id
+  console.log('userId',userId)
    
 
   Order.find({user: userId})
@@ -18,30 +19,49 @@ router.get("/orders/all",  isAuthenticated, (req, res, next) => {
 
 
 router.get("/orders/:id",  isAuthenticated, (req, res, next) => {
+
+  const userId= req.payload._id
   
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({ message: "Specified id is not valid" });
     return;
   }
 
-  Order.findById(req.params.id)
+  Order.findOne({_id: req.params.id, user: userId})
   .populate("products.product")
     .then((order) => res.status(200).json(order))
     .catch((err) => next(err));
 })
 
-router.patch("/orders/:id",  isAuthenticated, (req, res, next) => {
-  
-  const {id}= req.params
+router.put("/orders/:id",  isAuthenticated, (req, res, next) => {
 
-  const {products} = req.body
+  const userId= req.payload._id
   
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({ message: "Specified id is not valid" });
     return;
   }
 
-  Order.findByIdAndUpdate(id, { $push: {products: products}}, { new: true })
+  Order.findOneAndUpdate({_id: req.params.id, user: userId}, req.body, { new: true })
+    .then((order) => res.status(200).json(order))
+    .catch((err) => next(err));
+})
+
+
+router.patch("/orders/:id",  isAuthenticated, (req, res, next) => {
+
+  const userId= req.payload._id
+  
+  const {id}= req.params
+
+  
+  
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  Order.findOneAndUpdate({_id: id, user: userId}, req.body, { new: true })
     .then((order) => res.status(200).json(order))
     .catch((err) => next(err));
 })
@@ -49,12 +69,12 @@ router.patch("/orders/:id",  isAuthenticated, (req, res, next) => {
   
   router.post("/orders", isAuthenticated, (req, res, next) => {
   
-    const userId= req.auth.userId
+    const userId= req.payload._id
   
-    const {products, date} = req.body
+    const {products} = req.body
   
     
-    Order.create({user: userId, products, date})
+    Order.create({user: userId, products})
       .then((order) => res.status(201).json(order))
       .catch((err) => next(err))
   });
