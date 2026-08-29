@@ -1,8 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product.model");
+const { getProductsPerCategory } = require("../db/categoryIndex");
 const mongoose = require("mongoose");
 
+router.get("/products/category-summary", async (req, res, next) => {
+  try {
+    const summary = await getProductsPerCategory();
+    res.status(200).json(summary);
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.get("/products", (req, res, next) => {
   
