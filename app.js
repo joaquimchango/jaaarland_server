@@ -27,6 +27,9 @@ app.use("/api", ordersRoutes);
 const productsRoutes = require("./routes/products.routes");
 app.use("/api", productsRoutes);
 
+const cartRoutes = require("./routes/cart.routes");
+app.use("/api", cartRoutes);
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
 

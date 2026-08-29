@@ -12,6 +12,20 @@ const productSchema = new Schema({
   },
   image: String,
   category: String,
+  tags: [String],
+  trending: {
+    type: Boolean,
+    default: false
+  },
+  discount:String,
+  rating: {
+    type: Number,
+    default: 0
+  },
+  numReviews: {
+    type: Number,
+    default: 0
+  },
   stock: {
     type: Number,
     default: 0
