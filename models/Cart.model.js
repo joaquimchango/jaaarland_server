@@ -27,7 +27,6 @@ const CartSchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     products: [CartItemSchema],
     total: {

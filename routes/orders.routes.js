@@ -67,18 +67,50 @@ router.patch("/orders/:id",  isAuthenticated, (req, res, next) => {
 })
 
   
-  router.post("/orders", isAuthenticated, (req, res, next) => {
-  
-    const userId= req.payload._id
-  
-    const {products} = req.body
-  
-    
-    Order.create({user: userId, products})
-      .then((order) => res.status(201).json(order))
-      .catch((err) => next(err))
-  });
+router.post('/orders', isAuthenticated, (req, res, next) => {
+  const userId = req.payload._id
+  const {
+    products = [],
+    status = 'confirmed',
+    total = 0,
+    name,
+    address,
+    city,
+    state,
+    zip,
+    phone,
+    email,
+    country,
+  } = req.body
 
+  if (!Array.isArray(products) || products.length === 0) {
+    res.status(400).json({ message: 'Order must include at least one product.' })
+    return
+  }
+
+  const normalizedProducts = products.map((item) => ({
+    product: item.product,
+    quantity: Number(item.quantity ?? 1),
+    price: Number(item.price ?? 0),
+  }))
+
+  Order.create({
+    user: userId,
+    status,
+    products: normalizedProducts,
+    total: Number(total ?? 0),
+    name,
+    address,
+    city,
+    state,
+    zip,
+    phone,
+    email,
+    country,
+  })
+    .then((order) => res.status(201).json(order))
+    .catch((err) => next(err))
+})
 
 
 module.exports = router

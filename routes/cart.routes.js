@@ -6,10 +6,16 @@ const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 const router = express.Router();
 
 router.post("/cart", isAuthenticated, (req, res, next) => {
-  const userId = req.payload._id;
+  const userId = req.payload?._id;
   const { products = [], total = 0 } = req.body;
 
-  Cart.create({ owner: userId, products, total })
+  const cartData = { products, total };
+
+  if (userId) {
+    cartData.owner = userId;
+  }
+
+  Cart.create(cartData)
     .then((cart) => res.status(201).json(cart))
     .catch((err) => next(err));
 });
