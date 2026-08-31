@@ -5,6 +5,7 @@ const CartItemSchema = new Schema(
     product: {
       type: Schema.Types.ObjectId,
       ref: "Product",
+      required: true,
     },
     quantity: {
       type: Number,
@@ -27,6 +28,7 @@ const CartSchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
     products: [CartItemSchema],
     total: {

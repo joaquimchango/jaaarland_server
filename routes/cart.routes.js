@@ -1,23 +1,43 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Cart = require("../models/Cart.model");
+const Product = require("../models/Product.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 const router = express.Router();
 
-router.post("/cart", isAuthenticated, (req, res, next) => {
-  const userId = req.payload?._id;
-  const { products = [], total = 0 } = req.body;
+router.post("/cart", isAuthenticated, async (req, res, next) => {
+  try {
+    const userId = req.payload?._id;
+    const { products = [], total = 0 } = req.body;
 
-  const cartData = { products, total };
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(401).json({ message: "Authenticated user is not valid" });
+      return;
+    }
 
-  if (userId) {
-    cartData.owner = userId;
+    if (!Array.isArray(products) || products.length === 0) {
+      res.status(400).json({ message: "Cart must contain at least one product" });
+      return;
+    }
+
+    const productIds = products.map((item) => item?.product);
+    if (productIds.some((productId) => !mongoose.Types.ObjectId.isValid(productId))) {
+      res.status(400).json({ message: "Each cart product must have a valid product id" });
+      return;
+    }
+
+    const productCount = await Product.countDocuments({ _id: { $in: productIds } });
+    if (productCount !== new Set(productIds.map(String)).size) {
+      res.status(400).json({ message: "One or more products do not exist" });
+      return;
+    }
+
+    const cart = await Cart.create({ owner: userId, products, total });
+    res.status(201).json(cart);
+  } catch (err) {
+    next(err);
   }
-
-  Cart.create(cartData)
-    .then((cart) => res.status(201).json(cart))
-    .catch((err) => next(err));
 });
 
 router.get("/cart/:id", isAuthenticated, (req, res, next) => {
