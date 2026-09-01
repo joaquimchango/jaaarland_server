@@ -2,19 +2,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Cart = require("../models/Cart.model");
 const Product = require("../models/Product.model");
-const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 const router = express.Router();
 
 router.post("/cart", async (req, res, next) => {
   try {
-    const userId = req.payload?._id;
+    const userId = req.payload?._id : null;
     const { products = [], total = 0 } = req.body;
 
-    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
-      res.status(401).json({ message: "Authenticated user is not valid" });
-      return;
-    }
 
     if (!Array.isArray(products) || products.length === 0) {
       res.status(400).json({ message: "Cart must contain at least one product" });
