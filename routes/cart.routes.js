@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/cart", async (req, res, next) => {
   try {
-    const userId = req.payload?._id : null;
+    const userId = req.payload?_id ;
     const { products = [], total = 0 } = req.body;
 
 
@@ -36,7 +36,7 @@ router.post("/cart", async (req, res, next) => {
 });
 
 router.get("/cart/:id", (req, res, next) => {
-  const userId = req.payload._id;
+  const userId = req.payload?._id 
 
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({ message: "Specified id is not valid" });
