@@ -67,8 +67,8 @@ router.patch("/orders/:id",  isAuthenticated, (req, res, next) => {
 })
 
   
-router.post('/orders', isAuthenticated, (req, res, next) => {
-  const userId = req.payload._id
+router.post('/orders', (req, res, next) => {
+  const userId = req.payload._id ?? null
   const {
     products = [],
     status = 'confirmed',

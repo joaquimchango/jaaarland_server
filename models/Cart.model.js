@@ -11,11 +11,13 @@ const CartItemSchema = new Schema(
       type: Number,
       default: 1,
       min: 1,
+      required: true,
     },
     price: {
       type: Number,
       required: true,
       min: 0,
+      default: 0,
     },
   },
   {
@@ -27,8 +29,7 @@ const CartSchema = new Schema(
   {
     owner: {
       type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: "User"
     },
     products: [CartItemSchema],
     total: {

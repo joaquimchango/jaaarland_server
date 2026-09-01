@@ -81,7 +81,7 @@ router.delete("/cart/:id", (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.patch("/cart/:id", isAuthenticated, (req, res, next) => {
+router.patch("/cart/:id", (req, res, next) => {
   const userId = req.payload._id;
   const { id } = req.params;
   const { products, total } = req.body;
