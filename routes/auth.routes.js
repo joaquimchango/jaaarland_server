@@ -79,7 +79,7 @@ router.post("/login", (req, res, next) => {
   const { email, password } = req.body;
 
   // Check if email or password are provided as empty string
-  if (email === "" || password === "") {
+  if (!email||!password) {
     res.status(400).json({ message: "Provide email and password." });
     return;
   }
@@ -109,8 +109,7 @@ router.post("/login", (req, res, next) => {
           expiresIn: "6h",
         });
 
-        // Send the token as the response
-        res.status(200).json({ authToken: authToken });
+        res.status(200).json({ authToken });
       } else {
         res.status(401).json({ message: "Unable to authenticate the user" });
       }

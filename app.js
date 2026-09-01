@@ -17,7 +17,12 @@ const app = express();
 require("./config")(app);
 
 
-app.use(cors({ origin:[ process.env.ORIGIN ,"http://localhost:5173"]}));
+app.use(cors({
+  origin: [
+    process.env.ORIGIN,
+    "http://localhost:5173"
+  ]
+}));
 
 app.use(express.static('public'))
 app.use(express.json());

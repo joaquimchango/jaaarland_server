@@ -6,7 +6,7 @@ const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 const router = express.Router();
 
-router.post("/cart", isAuthenticated, async (req, res, next) => {
+router.post("/cart", async (req, res, next) => {
   try {
     const userId = req.payload?._id;
     const { products = [], total = 0 } = req.body;
@@ -40,7 +40,7 @@ router.post("/cart", isAuthenticated, async (req, res, next) => {
   }
 });
 
-router.get("/cart/:id", isAuthenticated, (req, res, next) => {
+router.get("/cart/:id", (req, res, next) => {
   const userId = req.payload._id;
 
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -61,7 +61,7 @@ router.get("/cart/:id", isAuthenticated, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.delete("/cart/:id", isAuthenticated, (req, res, next) => {
+router.delete("/cart/:id", (req, res, next) => {
   const userId = req.payload._id;
 
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
