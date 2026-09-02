@@ -91,7 +91,7 @@ router.patch("/cart/:id", (req, res, next) => {
   if (products !== undefined) updates.products = products;
   if (total !== undefined) updates.total = total;
 
-  Cart.findOneAndUpdate({ _id: id, owner: userId }, updates, { new: true })
+  Cart.findByIdAndUpdate(id, updates, { new: true })
     .populate("products.product")
     .then((cart) => {
       if (!cart) {
