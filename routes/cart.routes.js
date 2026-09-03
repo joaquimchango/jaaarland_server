@@ -77,9 +77,8 @@ router.delete("/cart/:id", (req, res, next) => {
 });
 
 router.patch("/cart/:id", (req, res, next) => {
-  const userId = req.payload._id;
   const { id } = req.params;
-  const { products, total } = req.body;
+  const { products=[], total } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(400).json({ message: "Specified id is not valid" });
