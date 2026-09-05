@@ -67,8 +67,14 @@ router.patch("/orders/:id",  isAuthenticated, (req, res, next) => {
 })
 
   
-router.post('/orders', (req, res, next) => {
-  const userId = req.payload._id ? req.payload._id : null
+router.post('/orders', isAuthenticated, (req, res, next) => {
+  const userId = req.payload?._id
+
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    res.status(401).json({ message: 'A valid authenticated user is required.' })
+    return
+  }
+
   const {
     products = [],
     status = 'confirmed',
