@@ -14,8 +14,21 @@ router.get("/products/category-summary", async (req, res, next) => {
 });
 
 router.get("/products", (req, res, next) => {
+
   
   Product.find()
+    .then((products) => res.status(200).json(products))
+    .catch((err) => next(err));
+
+  
+});
+
+
+router.get("/products/category/:category", (req, res, next) => {
+
+  const {category} = req.params
+
+  Product.find({category: category})
     .then((products) => res.status(200).json(products))
     .catch((err) => next(err));
 
