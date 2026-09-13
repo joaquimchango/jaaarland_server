@@ -57,14 +57,14 @@ router.get("/cart/:id", (req, res, next) => {
 });
 
 router.delete("/cart/:id", (req, res, next) => {
-  const userId = req.payload._id;
+  
 
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({ message: "Specified id is not valid" });
     return;
   }
 
-  Cart.findOneAndDelete({ _id: req.params.id, owner: userId })
+  Cart.findOneAndDelete({ _id: req.params.id })
     .then((cart) => {
       if (!cart) {
         res.status(404).json({ message: "Cart not found" });
