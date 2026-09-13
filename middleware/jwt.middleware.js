@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 
 const isAuthenticated = (req, res, next)=>{
 
+  console.log("Request header", req.headers)
+
 try{
 
  const authHeader = req.headers.authorization;
@@ -13,8 +15,14 @@ try{
         error: "Authorization header is missing",
       });
     }
-_
- const token = authHeader.split(" ")[1];
+
+ const [scheme, token] = authHeader.split(" ");
+ if (scheme !== "Bearer" || !token) {
+      return res.status(401).json({
+        error: "Authorization header must use the Bearer scheme",
+      });
+    }
+
  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
  
  req.payload = decodedToken;
